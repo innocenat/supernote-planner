@@ -1,0 +1,16 @@
+{
+  "name": "innocenat/planner-generator",
+  "description": "A PHP script for generating linked PDF planner for e-ink tablet.",
+  "minimum-stability": "stable",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "innosu",
+      "email": "me@innocen.at"
+    }
+  ],
+  "require": {
+    "tecnickcom/tcpdf": ">=6.5.0",
+    "jrmajor/fluent": "^0.4.1"
+  }
+}

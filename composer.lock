@@ -1,0 +1,310 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "d2f6b3f19c0170084b604b9e639b4129",
+    "packages": [
+        {
+            "name": "johngrogg/ics-parser",
+            "version": "v3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/u01jmg3/ics-parser.git",
+                "reference": "cc5cc7c6f934ec129c4e207828eb27315e1b61fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/u01jmg3/ics-parser/zipball/cc5cc7c6f934ec129c4e207828eb27315e1b61fb",
+                "reference": "cc5cc7c6f934ec129c4e207828eb27315e1b61fb",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5|^9",
+                "squizlabs/php_codesniffer": "~3.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ICal": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Goode",
+                    "role": "Developer/Owner"
+                },
+                {
+                    "name": "John Grogg",
+                    "email": "john.grogg@gmail.com",
+                    "role": "Developer/Prior Owner"
+                }
+            ],
+            "description": "ICS Parser",
+            "homepage": "https://github.com/u01jmg3/ics-parser",
+            "keywords": [
+                "iCalendar",
+                "ical",
+                "ical-parser",
+                "ics",
+                "ics-parser",
+                "ifb"
+            ],
+            "support": {
+                "issues": "https://github.com/u01jmg3/ics-parser/issues",
+                "source": "https://github.com/u01jmg3/ics-parser/tree/v3.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/u01jmg3",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-07-15T18:19:42+00:00"
+        },
+        {
+            "name": "jrmajor/fluent",
+            "version": "v0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jrmajor/fluent-php.git",
+                "reference": "3cf173fecd18782a2a8d982f3c9caa6acb54abf0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jrmajor/fluent-php/zipball/3cf173fecd18782a2a8d982f3c9caa6acb54abf0",
+                "reference": "3cf173fecd18782a2a8d982f3c9caa6acb54abf0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "jrmajor/pluralrules": "^1.0",
+                "php": "~8.0.0 || ~8.1.0"
+            },
+            "require-dev": {
+                "azjezz/psl": "^1.9",
+                "ext-json": "*",
+                "ext-simplexml": "*",
+                "jrmajor/cs": "^0.3.3",
+                "nunomaduro/collision": "^5.10",
+                "php-standard-library/psalm-plugin": "^1.1",
+                "phpbench/phpbench": "^1.2",
+                "phpunit/phpunit": "10.0.x-dev",
+                "psalm/plugin-phpunit": "^0.16.1",
+                "sebastian/diff": "5.0.x-dev as 4.0.4",
+                "symfony/console": "^5.4",
+                "symfony/var-dumper": "^5.4",
+                "vimeo/psalm": "^4.17"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Major\\Fluent\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremiasz Major",
+                    "email": "jrh.mjr@gmail.com"
+                }
+            ],
+            "description": "Fluent localization system for PHP",
+            "homepage": "https://github.com/jrmajor/fluent-php",
+            "keywords": [
+                "ast",
+                "ftl",
+                "gender",
+                "i18n",
+                "internationalization",
+                "l10n",
+                "language",
+                "locale",
+                "localization",
+                "mozilla",
+                "parser",
+                "plural",
+                "translation",
+                "translator"
+            ],
+            "support": {
+                "issues": "https://github.com/jrmajor/fluent-php/issues",
+                "source": "https://github.com/jrmajor/fluent-php/tree/v0.4.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/jrmajor",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-01-27T17:43:02+00:00"
+        },
+        {
+            "name": "jrmajor/pluralrules",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jrmajor/pluralrules.git",
+                "reference": "3cf7098257af320969789794aed6f08390bb3578"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jrmajor/pluralrules/zipball/3cf7098257af320969789794aed6f08390bb3578",
+                "reference": "3cf7098257af320969789794aed6f08390bb3578",
+                "shasum": ""
+            },
+            "require": {
+                "ext-intl": "*",
+                "php": "~8.0.0 || ~8.1.0"
+            },
+            "require-dev": {
+                "azjezz/psl": "^1.9",
+                "hoa/compiler": "~3.17",
+                "jrmajor/cs": "^0.3.3",
+                "nunomaduro/collision": "^5.10",
+                "pestphp/pest": "^1.21",
+                "phpstan/phpstan": "^1.3",
+                "symfony/console": "^5.4",
+                "symfony/var-dumper": "^5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/operands.php",
+                    "src/operators.php"
+                ],
+                "psr-4": {
+                    "Major\\PluralRules\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremiasz Major",
+                    "email": "jrh.mjr@gmail.com"
+                }
+            ],
+            "description": "Identify plural categories according to CLDR",
+            "homepage": "https://github.com/jrmajor/pluralrules",
+            "keywords": [
+                "cldr",
+                "i18n",
+                "internationalization",
+                "l10n",
+                "language",
+                "locale",
+                "localization",
+                "plural",
+                "plural categories",
+                "plural rules"
+            ],
+            "support": {
+                "issues": "https://github.com/jrmajor/pluralrules/issues",
+                "source": "https://github.com/jrmajor/pluralrules/tree/v1.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/jrmajor",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-01-02T22:51:29+00:00"
+        },
+        {
+            "name": "tecnickcom/tcpdf",
+            "version": "6.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tecnickcom/TCPDF.git",
+                "reference": "cc54c1503685e618b23922f53635f46e87653662"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/cc54c1503685e618b23922f53635f46e87653662",
+                "reference": "cc54c1503685e618b23922f53635f46e87653662",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "config",
+                    "include",
+                    "tcpdf.php",
+                    "tcpdf_parser.php",
+                    "tcpdf_import.php",
+                    "tcpdf_barcodes_1d.php",
+                    "tcpdf_barcodes_2d.php",
+                    "include/tcpdf_colors.php",
+                    "include/tcpdf_filters.php",
+                    "include/tcpdf_font_data.php",
+                    "include/tcpdf_fonts.php",
+                    "include/tcpdf_images.php",
+                    "include/tcpdf_static.php",
+                    "include/barcodes/datamatrix.php",
+                    "include/barcodes/pdf417.php",
+                    "include/barcodes/qrcode.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Nicola Asuni",
+                    "email": "info@tecnick.com",
+                    "role": "lead"
+                }
+            ],
+            "description": "TCPDF is a PHP class for generating PDF documents and barcodes.",
+            "homepage": "http://www.tcpdf.org/",
+            "keywords": [
+                "PDFD32000-2008",
+                "TCPDF",
+                "barcodes",
+                "datamatrix",
+                "pdf",
+                "pdf417",
+                "qrcode"
+            ],
+            "support": {
+                "issues": "https://github.com/tecnickcom/TCPDF/issues",
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.5.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tcpdf%20project",
+                    "type": "custom"
+                }
+            ],
+            "time": "2022-08-12T07:50:54+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
+}
