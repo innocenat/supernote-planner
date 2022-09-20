@@ -15,7 +15,7 @@ function make_school_year($year): string
 $languages = ['en'];
 $option_names = [
     ['sunday', 'monday'],
-    ['dot', 'lined'],
+    ['lined', 'dot'],
     ['200', '40'],
     ['24hr', '12hr'],
     ['day', 'night'],
