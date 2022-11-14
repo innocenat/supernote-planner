@@ -1,6 +1,6 @@
 <?php
 
-$YEAR = 2022;
+$YEAR = 2023;
 
 function make_regular_year($year): string
 {
@@ -34,10 +34,10 @@ foreach ($languages as $lang) {
             $name[] = $option_names[$j][intval($options[$j])];
         }
 
-        $filename = 'Planner.' . implode('.', $name) . '.school-' . strval($YEAR) . '.' . $lang . '.pdf';
-        $cmd = 'php make-planner.php ' . $lang . ' ' . $options . ' ' . make_school_year($YEAR) . ' "Planner" "School-' . strval($YEAR) . '" ' . $filename;
-        echo $cmd, "\n";
-        system($cmd);
+//        $filename = 'Planner.' . implode('.', $name) . '.school-' . strval($YEAR) . '.' . $lang . '.pdf';
+//        $cmd = 'php make-planner.php ' . $lang . ' ' . $options . ' ' . make_school_year($YEAR) . ' "Planner" "School-' . strval($YEAR) . '" ' . $filename;
+//        echo $cmd, "\n";
+//        system($cmd);
 
         $filename = 'Planner.' . implode('.', $name) . '.' . strval($YEAR) . '.' . $lang . '.pdf';
         $cmd = 'php make-planner.php ' . $lang . ' ' . $options . ' ' . make_regular_year($YEAR) . ' "Planner" "' . strval($YEAR) . '" ' . $filename;
