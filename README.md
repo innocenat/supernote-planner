@@ -41,9 +41,11 @@ This is revision 3 of my design, and the one
 I feel is good enough to share. Enjoy.
 
 ## Building
+You can get prebuilt version from the Release page: https://github.com/innocenat/supernote-planner/releases/
+
+For customizing and building from source, you need to install PHP command line, and run php `make-planner.php`.
 
 See `make-planner.php` and `build.php` for other configurations.
-More common configurations are available in Release section.
 
 ## License
 
