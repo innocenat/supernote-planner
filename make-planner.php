@@ -15,7 +15,7 @@ require 'planner/config.php';
 require 'vendor/autoload.php';
 
 if (count($argv) < 8) {
-    echo 'Usage: php ' . $argv[0] . ' [options] <lang> <start-y-m> <end-y-m> <title> <subtitle> <filename.pdf>', "\n";
+    echo 'Usage: php ' . $argv[0] . ' <lang> [options] <start-y-m> <end-y-m> <title> <subtitle> <filename.pdf>', "\n";
     echo '    e.g. php ' . $argv[0] . ' en 11000 2021-12 2023-03 "Planner" "2022" Planner-2022.pdf', "\n";
     echo '    options: start_monday, note_style_dot, extra_40, 12hr, night_shift', "\n";
     exit(1);
