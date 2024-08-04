@@ -13,6 +13,9 @@ class PlannerGenerator implements IGenerator
         foreach (Calendar::iterate_year() as $month) {
             yearly_calendar($pdf, $month, $config['monday_start']);
         }
+        foreach (Calendar::iterate_quarter() as $quarter) {
+            planner_quarterly($pdf, $quarter);
+        }
         foreach (Calendar::iterate_month() as $month) {
             planner_monthly($pdf, $month, $config['monday_start']);
         }
@@ -22,6 +25,9 @@ class PlannerGenerator implements IGenerator
         foreach (Calendar::iterate_day() as $day) {
             planner_daily($pdf, $day, $config['12hr'], $config['night_shift']);
         }
+        foreach (Calendar::iterate_quarter() as $quarter) {
+            planner_quarterly_task($pdf, $quarter);
+        }
         foreach (Calendar::iterate_month() as $month) {
             planner_monthly_planner($pdf, $month, $config['note_style']);
         }
@@ -30,6 +36,9 @@ class PlannerGenerator implements IGenerator
         }
         foreach (Calendar::iterate_day() as $day) {
             planner_daily_diary($pdf, $day);
+        }
+        foreach (Calendar::iterate_quarter() as $quarter) {
+            planner_quarterly_note($pdf, $quarter, $config['note_style']);
         }
         foreach (Calendar::iterate_month() as $month) {
             planner_monthly_note($pdf, $month, $config['note_style']);

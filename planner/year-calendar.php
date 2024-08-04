@@ -1,7 +1,27 @@
 <?php
 
+function planner_yearly_make_quarter_tabs(TCPDF $pdf, Year $year): array
+{
+    $tabs = [];
+    $tab_targets = [];
+    $actives = [];
+
+    foreach ($year->quarters as $quarter) {
+        $tabs[] = ['name' => Loc::_(sprintf('quarter.q%d', $quarter->quarter))];
+        $tab_targets[] = Links::quarterly($pdf, $quarter);
+        if ($quarter->active()) {
+            $actives[] = $quarter->quarter - 1;
+        }
+    }
+
+    planner_tabs_calculate_size($pdf, $tabs);
+    return [$tabs, $tab_targets, $actives];
+}
+
 function yearly_calendar_header(TCPDF $pdf, Year $year): void
 {
+    $year_margin = 15;
+    $margin = planner_header_margin();
     $height = planner_header_height();
 
     $pdf->setFont(Loc::_('fonts.font2'));
@@ -9,9 +29,15 @@ function yearly_calendar_header(TCPDF $pdf, Year $year): void
     $pdf->setTextColor(...Colors::g(15));
     $pdf->setFillColor(...Colors::g(0));
 
+
     $pdf->Rect(0, PX100, W, $height, 'F');
     $pdf->setAbsXY(0, PX100);
-    $pdf->Cell(W, $height, strval($year->year), align: 'C');
+    $pdf->Cell($year_margin - $margin, $height, strval($year->year), align: 'R');
+
+    // Quarterly link
+    [$tabs, $tab_targets, $actives] = planner_yearly_make_quarter_tabs($pdf, $year);
+    draw_tabs($pdf, $actives, $tabs);
+    link_tabs($pdf, $tabs, $tab_targets);
 }
 
 function yearly_month_calendar(TCPDF $pdf, Month $month, bool $start_monday, float $x, float $y, float $w, float $h): void

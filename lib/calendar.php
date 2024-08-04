@@ -54,6 +54,11 @@ final class Day
         return Month::make($this->year, $this->month);
     }
 
+    public function quarter(): Quarter
+    {
+        return Quarter::fromYearMonth($this->year, $this->month);
+    }
+
     public function year(): Year
     {
         return Year::make($this->year);
@@ -78,7 +83,7 @@ final class Day
 
     public function __toString(): string
     {
-        return sprintf('day:%d-%d-%d', $this->year, $this->month, $this->day);
+        return sprintf('[day:%d-%d-%d]', $this->year, $this->month, $this->day);
     }
 }
 
@@ -86,6 +91,9 @@ final class Week
 {
     public readonly int $year;
     public readonly int $week;
+    /**
+     * @var Day[]
+     */
     public readonly array $days;
 
     private static array $instances;
@@ -155,6 +163,18 @@ final class Week
         }
     }
 
+    function quarters(): array
+    {
+        $first_quarter = $this->days[0]->quarter();
+        $last_quarter = $this->days[6]->quarter();
+
+        if (0 === $first_quarter->compare($last_quarter)) {
+            return [$first_quarter];
+        } else {
+            return [$first_quarter, $last_quarter];
+        }
+    }
+
     function years(): array
     {
         $first_year = $this->days[0]->year();
@@ -183,14 +203,23 @@ final class Week
 
     public function __toString(): string
     {
-        return sprintf('week:%d-%d', $this->year, $this->week);
+        return sprintf('[week:%d-%d]', $this->year, $this->week);
     }
 }
 
 final class Month
 {
-    public readonly int $year, $month, $day_in_month;
-    public readonly array $days, $weeks;
+    public readonly int $year, $quarter, $month, $day_in_month;
+
+    /**
+     * @var Day[]
+     */
+    public readonly array $days;
+
+    /**
+     * @var Week[]
+     */
+    public readonly array $weeks;
 
     private static array $instances;
 
@@ -214,6 +243,8 @@ final class Month
             $week = $week->next();
         } while ($week->days[0]->month === $month);
         $this->weeks = $weeks;
+
+        $this->quarter = Quarter::calculateFromMonth($month);
     }
 
     private static function normalize(int $year, int $month): array
@@ -252,6 +283,11 @@ final class Month
         return self::make($this->year, $this->month - 1);
     }
 
+    public function quarter(): Quarter
+    {
+        return Quarter::make($this->year, $this->quarter);
+    }
+
     public function year(): Year
     {
         return Year::make($this->year);
@@ -278,14 +314,124 @@ final class Month
 
     public function __toString(): string
     {
-        return sprintf('month:%d-%d', $this->year, $this->month);
+        return sprintf('[month:%d-%d]', $this->year, $this->month);
+    }
+}
+
+final class Quarter
+{
+    public readonly int $year;
+    public readonly int $quarter;
+
+    /**
+     * @var Month[]
+     */
+    public readonly array $months;
+    public readonly int $start_month, $end_month;
+
+    private static array $instances;
+
+    private function __construct(int $year, int $quarter)
+    {
+        $this->year = $year;
+        $this->quarter = $quarter;
+
+        $this->start_month = 1 + 3 * ($quarter - 1);
+        $this->end_month = 3 * $quarter;
+
+        $months = [];
+        for ($i = $this->start_month; $i <= $this->end_month; $i++) {
+            $months[] = Month::make($year, $i);
+        }
+        $this->months = $months;
+    }
+
+    private static function normalize(int $year, int $quarter): array
+    {
+        while ($quarter > 4) {
+            $quarter -= 4;
+            $year++;
+        }
+        while ($quarter < 1) {
+            $quarter += 4;
+            $year--;
+        }
+        return [$year, $quarter];
+    }
+
+    public static function calculateFromMonth(int $month): int
+    {
+        return ceil(($month - 1) / 4) + 1;
+    }
+
+    public static function make(int $year, int $quarter): Quarter
+    {
+        [$year, $quarter] = self::normalize($year, $quarter);
+        $key = "$year-$quarter";
+
+        if (isset(self::$instances[$key])) {
+            return self::$instances[$key];
+        }
+
+        return self::$instances[$key] = new self($year, $quarter);
+    }
+
+    public static function fromYearMonth(int $year, int $month): Quarter
+    {
+        return self::make($year, self::calculateFromMonth($month));
+    }
+
+    public function next(): Quarter
+    {
+        return self::make($this->year, $this->quarter + 1);
+    }
+
+    public function prev(): Quarter
+    {
+        return self::make($this->year, $this->quarter - 1);
+    }
+
+    public function year(): Year
+    {
+        return Year::make($this->year);
+    }
+
+    public function hasDay(Day $day): bool
+    {
+        return $day->year === $this->year && ($day->month >= $this->start_month && $day->month <= $this->end_month);
+    }
+
+    public function active(): bool
+    {
+        return Month::make($this->year, $this->start_month)->compare(Calendar::startMonth()) * Month::make($this->year, $this->end_month)->compare(Calendar::endMonth()) < 1;
+    }
+
+    public function compare(Quarter $that): int
+    {
+        $result = $this->year <=> $that->year;
+        if ($result === 0) {
+            $result = $this->quarter <=> $that->quarter;
+        }
+        return $result;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('[quarter:%d-%d]', $this->year, $this->quarter);
     }
 }
 
 final class Year
 {
     public readonly int $year;
+    /**
+     * @var Month[]
+     */
     public readonly array $months;
+    /**
+     * @var Quarter[]
+     */
+    public readonly array $quarters;
 
     private static array $instances;
 
@@ -297,7 +443,12 @@ final class Year
         for ($i = 1; $i <= 12; $i++) {
             $months[] = Month::make($year, $i);
         }
+        $quarters = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $quarters[] = Quarter::make($year, $i);
+        }
         $this->months = $months;
+        $this->quarters = $quarters;
     }
 
     public static function make(int $year): Year
@@ -361,6 +512,16 @@ final class Calendar
         return self::endMonth()->year();
     }
 
+    static function startQuarter(): Quarter
+    {
+        return self::startMonth()->quarter();
+    }
+
+    static function endQuarter(): Quarter
+    {
+        return self::endMonth()->quarter();
+    }
+
     static function startWeek(): Week
     {
         return self::startMonth()->weeks[0];
@@ -387,6 +548,16 @@ final class Calendar
     {
         $current = self::startYear();
         $end = self::endYear();
+        do {
+            yield $current;
+            $current = $current->next();
+        } while ($current->compare($end) <= 0);
+    }
+
+    static function iterate_quarter(): Generator
+    {
+        $current = self::startQuarter();
+        $end = self::endQuarter();
         do {
             yield $current;
             $current = $current->next();

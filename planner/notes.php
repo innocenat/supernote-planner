@@ -85,6 +85,22 @@ function planner_note_template(TCPDF $pdf, string $note_style, float $x, float $
 
 Templates::register('planner-note', 'planner_note_template');
 
+function planner_quarterly_note(TCPDF $pdf, Quarter $quarter, string $note_style): void
+{
+    [$tabs, $tab_targets] = planner_make_quarterly_tabs($pdf, $quarter);
+
+    $pdf->AddPage();
+    $pdf->setLink(Links::quarterly($pdf, $quarter, 'note'));
+
+    planner_quarterly_header($pdf, $quarter, 2, $tabs);
+    link_tabs($pdf, $tabs, $tab_targets);
+
+    Templates::draw('planner-note', $note_style, ...planner_size_dimensions(2));
+
+    planner_nav_sub($pdf, ...$quarter->months);
+    planner_nav_main($pdf, 0);
+}
+
 function planner_monthly_note(TCPDF $pdf, Month $month, string $note_style): void
 {
     [$tabs, $tab_targets] = planner_make_monthly_tabs($pdf, $month);

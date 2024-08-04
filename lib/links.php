@@ -30,6 +30,12 @@ class Links
         return self::link($pdf, 'monthly__' . $key . '--' . $name . '__' . $no);
     }
 
+    static function quarterly(TCPDF $pdf, Quarter $quarter, string $name = 'default', int $no = 1): mixed
+    {
+        $key = sprintf("%d-%d", $quarter->year, $quarter->quarter);
+        return self::link($pdf, 'quarterly__' . $key . '--' . $name . '__' . $no);
+    }
+
     static function yearly(TCPDF $pdf, Year $year, string $name = 'default', int $no = 1): mixed
     {
         $key = $year->year;

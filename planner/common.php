@@ -28,9 +28,13 @@ function planner_tabs_calculate_size(TCPDF $pdf, array &$tabs): void
     }
 }
 
-function draw_tabs(TCPDF $pdf, int $active, array $tabs): void
+function draw_tabs(TCPDF $pdf, int|array $actives, array $tabs): void
 {
     $margin = planner_header_margin();
+
+    if (!is_array($actives)) {
+        $actives = [$actives];
+    }
 
     $tab_all_size = 0;
     foreach ($tabs as $tab) {
@@ -54,7 +58,7 @@ function draw_tabs(TCPDF $pdf, int $active, array $tabs): void
             $pdf->RoundedRect($x, $y, $tab['size'], $h - 1, 1, '1111', 'F');
             $pdf->Cell($tab['size'], $h - 1, $tab['name'], align: 'C');
         } else {
-            if ($i === $active) {
+            if (in_array($i, $actives)) {
                 $pdf->setFillColor(...Colors::g(15));
                 $pdf->setTextColor(...Colors::g(0));
             } else {

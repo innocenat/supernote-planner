@@ -6,6 +6,12 @@ fonts = fonts
 full-date = {$weekday}, {$month} {$date}
 short-date = {$date} {$weekday}
 
+quarter = Quarter
+    .q1 = Q1
+    .q2 = Q2
+    .q3 = Q3
+    .q4 = Q4
+
 month = Month
     .l01 = January
     .l02 = February

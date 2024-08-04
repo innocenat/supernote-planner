@@ -14,6 +14,7 @@ function planner_monthly_header_template(TCPDF $pdf, float $y, float $h, int $ac
 
     $pdf->setFillColor(...Colors::g(15));
     $pdf->Rect($year_margin - 0.1, $y, 0.2, $h, 'F');
+    $pdf->Rect($year_margin + $quarter_margin - 0.1, $y, 0.2, $h, 'F');
 
     draw_tabs($pdf, $active, $tabs);
 }
@@ -23,10 +24,11 @@ Templates::register('planner-monthly-header', 'planner_monthly_header_template')
 function planner_monthly_header(TCPDF $pdf, Month $month, int $active, array $tabs): void
 {
     $year_margin = 15;
+    $quarter_margin = 10;
     $margin = planner_header_margin();
     $height = planner_header_height();
 
-    Templates::draw('planner-monthly-header', PX100, $height, $active, $year_margin, $tabs);
+    Templates::draw('planner-monthly-header', PX100, $height, $active, $year_margin, $quarter_margin, $tabs);
 
     $pdf->setFont(Loc::_('fonts.font2'));
     $pdf->setFontSize(Size::fontSize($height, 1.5));
@@ -35,7 +37,10 @@ function planner_monthly_header(TCPDF $pdf, Month $month, int $active, array $ta
     $pdf->setAbsXY(0, PX100);
     $pdf->Cell($year_margin - $margin, $height, strval($month->year), align: 'R');
     $pdf->Link(0, PX100, $year_margin, $height, Links::yearly($pdf, $month->year()));
-    $pdf->setAbsXY($year_margin + $margin, PX100);
+    $pdf->setAbsXY($year_margin, PX100);
+    $pdf->Cell($quarter_margin, $height, Loc::_(sprintf('quarter.q%d', $month->quarter)), align: 'C');
+    $pdf->Link($year_margin, PX100, $quarter_margin, $height, Links::quarterly($pdf, $month->quarter()));
+    $pdf->setAbsXY($year_margin + $quarter_margin + $margin, PX100);
     $pdf->Cell(W, $height, Loc::_(sprintf('month.l%02d', $month->month)), align: 'L');
 }
 
