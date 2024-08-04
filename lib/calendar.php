@@ -180,7 +180,7 @@ final class Week
         $first_year = $this->days[0]->year();
         $last_year = $this->days[6]->year();
 
-        if (0 === $first_year->equals($last_year)) {
+        if (0 === $first_year->compare($last_year)) {
             return [$first_year];
         } else {
             return [$first_year, $last_year];
