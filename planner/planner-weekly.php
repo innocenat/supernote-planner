@@ -4,7 +4,7 @@ function planner_weekly_extra_day_link_height(): float
     return 6;
 }
 
-function planner_weekly_header_template(TCPDF $pdf, float $y, float $h, int $active, float $year_margin, float $month_size, int $months, array $tabs, float $day_link_height): void
+function planner_weekly_header_template(TCPDF $pdf, float $y, float $h, int $active, float $year_margin, float $month_size, int $months, array $tabs, float $day_link_height, bool $day_nav): void
 {
     $pdf->setLineStyle([
         'width' => 0.2,
@@ -26,15 +26,17 @@ function planner_weekly_header_template(TCPDF $pdf, float $y, float $h, int $act
 
     draw_tabs($pdf, $active, $tabs);
 
-    // Day link section
-    $per_day = (W - 4) / 7;
-    $pdf->setLineStyle([
-        'width' => 0.1,
-        'cap' => 'butt',
-        'color' => Colors::g(0)
-    ]);
-    for ($i = 0; $i < 7; $i++) {
-        $pdf->RoundedRect(2 + $i * $per_day + 0.5, $y + $h + 0.5, $per_day - 1, $day_link_height - 1, 1, '1111', 'S');
+    if ($day_nav) {
+        // Day link section
+        $per_day = (W - 4) / 7;
+        $pdf->setLineStyle([
+            'width' => 0.1,
+            'cap' => 'butt',
+            'color' => Colors::g(0)
+        ]);
+        for ($i = 0; $i < 7; $i++) {
+            $pdf->RoundedRect(2 + $i * $per_day + 0.5, $y + $h + 0.5, $per_day - 1, $day_link_height - 1, 1, '1111', 'S');
+        }
     }
 }
 
@@ -47,7 +49,7 @@ function planner_weekly_make_day_str(Day $day): string
     return Loc::_('short-date', weekday: $weekday_short, date: $date);
 }
 
-function planner_weekly_header(TCPDF $pdf, Week $week, int $active, array $tabs): void
+function planner_weekly_header(TCPDF $pdf, Week $week, int $active, array $tabs, bool $day_nav = true): void
 {
     $year_margin = 15;
     $month_size = 12;
@@ -70,7 +72,7 @@ function planner_weekly_header(TCPDF $pdf, Week $week, int $active, array $tabs)
         $month_count = 2;
     }
 
-    Templates::draw('planner-weekly-header', PX100, $height, $active, $year_margin, $month_size, $month_count, $tabs, $day_link_height);
+    Templates::draw('planner-weekly-header', PX100, $height, $active, $year_margin, $month_size, $month_count, $tabs, $day_link_height, $day_nav);
 
     $pdf->setFont(Loc::_('fonts.font2'));
     $pdf->setFontSize(Size::fontSize($height, 1.5));
@@ -90,35 +92,55 @@ function planner_weekly_header(TCPDF $pdf, Week $week, int $active, array $tabs)
     $pdf->setAbsXY($x + $month_size + $margin, PX100);
     $pdf->Cell(W, $height, Loc::_('week.number_s', week: $week->week), align: 'L');
 
-    // Daily text and link
-    $per_day = (W - 4) / 7;
-    $x = 2;
-    $y = PX100 + $height;
-    $pdf->setFontSize(Size::fontSize($day_link_height, $day_link_line_height));
-    $pdf->setTextColor(...Colors::g(0));
-    $pdf->setAbsXY($x, $y);
-    foreach ($week->days as $day) {
-        $pdf->Cell($per_day, $day_link_height, planner_weekly_make_day_str($day), align: 'C');
-        $pdf->Link($x, $y, $per_day, $day_link_height, Links::daily($pdf, $day));
-        $x += $per_day;
+    if ($day_nav) {
+        // Daily text and link
+        $per_day = (W - 4) / 7;
+        $x = 2;
+        $y = PX100 + $height;
+        $pdf->setFontSize(Size::fontSize($day_link_height, $day_link_line_height));
+        $pdf->setTextColor(...Colors::g(0));
+        $pdf->setAbsXY($x, $y);
+        foreach ($week->days as $day) {
+            $pdf->Cell($per_day, $day_link_height, planner_weekly_make_day_str($day), align: 'C');
+            $pdf->Link($x, $y, $per_day, $day_link_height, Links::daily($pdf, $day));
+            $x += $per_day;
+        }
     }
 }
 
-function planner_weekly_calender_size_dimension($margin, $line_size): array
+function planner_weekly_calender_size_dimension($margin): array
 {
     [$start_x, $start_y, $width, $height] = planner_size_dimensions($margin);
-    $start_y += planner_weekly_extra_day_link_height() + $line_size * 0.6; // This is correct -- some hack to remove top line
-    $height -= planner_weekly_extra_day_link_height() + $line_size * 0.6;
     return [$start_x, $start_y, $width, $height];
 }
 
-function planner_weekly_template(TCPDF $pdf, float $margin, float $line_size): void
+function planner_weekly_template(TCPDF $pdf, float $margin, float $left_size, float $line_size): void
 {
-    [$start_x, $start_y, $width, $height] = planner_weekly_calender_size_dimension($margin, $line_size);
+    [$start_x, $start_y, $width, $height] = planner_weekly_calender_size_dimension($margin);
 
-    $half_width = ($width - $margin) / 2;
-    planner_draw_note_area($pdf, $start_x, $start_y, $half_width, $height, 'rule', $line_size);
-    planner_draw_note_area($pdf, $start_x + $margin + $half_width, $start_y, $half_width, $height, 'rule', $line_size);
+    $per_row = $height / 7;
+
+    $lines = round($per_row / $line_size);
+    $line_size = $per_row / $lines;
+    planner_draw_note_area($pdf, $start_x + $left_size, $start_y, $width - $left_size, $height, 'rule', $line_size);
+
+    $pdf->setLineStyle([
+        'width' => 0.2,
+        'cap' => 'butt',
+        'color' => Colors::g(0)
+    ]);
+    $pdf->setFillColor(...Colors::g(12));
+    $pdf->setTextColor(...Colors::g(0));
+
+    $pdf->Rect($start_x, $start_y, $left_size, $height, 'F');
+    $midpoint = $start_x + $left_size + ($width - $left_size) / 2;
+    $pdf->Line($midpoint, $start_y, $midpoint, $start_y + $height);
+
+    for ($i = 0; $i < 7; $i++) {
+        if ($i !== 0) {
+            $pdf->Line($start_x + $left_size, $start_y + $i * $per_row, $start_x + $width, $start_y + $i * $per_row);
+        }
+    }
 }
 
 Templates::register('planner-weekly', 'planner_weekly_template');
@@ -147,39 +169,33 @@ function planner_weekly(TCPDF $pdf, Week $week): void
     $pdf->AddPage();
     $pdf->setLink(Links::weekly($pdf, $week));
 
-    planner_weekly_header($pdf, $week, 0, $tabs);
-    link_tabs($pdf, $tabs, $tab_targets);
-
     $margin = 2;
     $line_size = 6;
     $line_height = 1.5;
+    $left_size = 6;
 
-    Templates::draw('planner-weekly', $margin, $line_size);
+    Templates::draw('planner-weekly', $margin, $left_size, $line_size);
 
-    [$start_x, $start_y, $width, $height] = planner_weekly_calender_size_dimension($margin, $line_size);
-
-    $half_width = ($width - $margin) / 2;
-    [$offset_x, $offset_y] = planner_calculate_marking_offset($half_width, $height, 'rule', $line_size);
+    [$start_x, $start_y, $width, $height] = planner_weekly_calender_size_dimension($margin);
+    $per_row = $height / 7;
 
     $pdf->setTextColor(...Colors::g(0));
     $pdf->setFillColor(...Colors::g(12));
     $pdf->setFont(Loc::_('fonts.font2'));
+    $pdf->setFontSize(Size::fontSize($line_size / 2, $line_height));
 
-    $x = [$start_x + $offset_x, $start_x + $half_width + $margin + $offset_x];
-    $y = [$start_y + $offset_y, $start_y + $offset_y + 5 * $line_size, $start_y + $offset_y + 10 * $line_size, $start_y + $offset_y + 15 * $line_size];
-    $w = $half_width - 2 * $offset_x;
+    foreach ($week->days as $day) {
+        $pdf->setAbsXY($start_x, $start_y);
+        $pdf->Cell($left_size, $line_size / 2, Loc::_(sprintf('weekday.m%d', $day->dow)), ln: 2, align: 'C', valign: 'C');
+        $pdf->Cell($left_size, $line_size / 2, strval($day->day), align: 'C', valign: 'C');
 
-    $title_offset = 0.4 * $line_size - $line_size;
-    $title_height = 0.6 * $line_size;
-    $pdf->setFontSize(Size::fontSize($title_height, $line_height));
+        $pdf->Link($start_x, $start_y, $left_size, $per_row, Links::daily($pdf, $day));
 
-    for ($i = 0; $i < 8; $i++) {
-        $pdf->setAbsXY($x[floor($i / 4)], $y[$i % 4] + $title_offset);
-        $pdf->Rect($x[floor($i / 4)], $y[$i % 4] + $title_offset, $w, $title_height, 'F');
-        $pdf->Cell($w, $title_height, $i === 7 ? Loc::_('note') : planner_daily_make_day_str($week->days[$i]));
-        if ($i < 7)
-            $pdf->Link($x[floor($i / 4)], $y[$i % 4] - $line_size, $w, $line_size, Links::daily($pdf, $week->days[$i]));
+        $start_y += $per_row;
     }
+
+    planner_weekly_header($pdf, $week, 0, $tabs, false);
+    link_tabs($pdf, $tabs, $tab_targets);
 
     planner_nav_sub($pdf, $week->days[0]->month(), $week->days[6]->month());
     planner_nav_main($pdf, 0);
