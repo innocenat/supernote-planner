@@ -42,5 +42,6 @@ Templates::register('nav-main', 'planner_nav_main_template');
 
 function planner_nav_main(TCPDF $pdf, int $active, mixed $prev = null, mixed $next = null): void
 {
-    Templates::draw('nav-main', $active, isset($prev), isset($next));
+    if (!PLANNER_ONLY)
+        Templates::draw('nav-main', $active, isset($prev), isset($next));
 }

@@ -49,11 +49,14 @@ class PlannerGenerator implements IGenerator
         foreach (Calendar::iterate_day() as $day) {
             planner_daily_note($pdf, $day, $config['note_style']);
         }
-        section_note_index($pdf, $config['extra_amount']);
-        section_note_pages($pdf, $config['extra_amount'], $config['note_style']);
-        section_list_index($pdf, $config['extra_amount']);
-        section_list_pages($pdf, $config['extra_amount']);
-        section_event_index($pdf, $config['extra_amount']);
-        section_event_pages($pdf, $config['extra_amount']);
+
+        if (!$config['planner_only']) {
+            section_note_index($pdf, $config['extra_amount']);
+            section_note_pages($pdf, $config['extra_amount'], $config['note_style']);
+            section_list_index($pdf, $config['extra_amount']);
+            section_list_pages($pdf, $config['extra_amount']);
+            section_event_index($pdf, $config['extra_amount']);
+            section_event_pages($pdf, $config['extra_amount']);
+        }
     }
 }
