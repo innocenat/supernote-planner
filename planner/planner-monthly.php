@@ -100,6 +100,25 @@ function planner_monthly_template(TCPDF $pdf, int $rows, bool $monday_start, flo
             $start_y + $dow_header_height + $i * $per_row
         );
     }
+
+    // Table cells
+    $circle_size = 1;
+    $square_space = 1;
+    $square_size = ($per_col - 5 * $square_space) / 4;
+    for ($i = 0; $i < 7; $i++) {
+        for ($j = 0; $j < $rows; $j++) {
+            $x = $start_x + $weekly_size + $i * $per_col;
+            $y = $start_y + $dow_header_height + $j * $per_row;
+
+            // Circle marker
+            $pdf->Circle($x + $per_col - 2 * $circle_size, $y + 2 * $circle_size, $circle_size);
+
+            // Square marker
+            for ($k = 0; $k < 4; $k++) {
+                $pdf->Rect($x + $square_space + $k * ($square_size + $square_space), $y + $per_row - $square_size - $square_space, $square_size, $square_size);
+            }
+        }
+    }
 }
 
 Templates::register('planner-monthly', 'planner_monthly_template');
