@@ -1,5 +1,5 @@
 <?php
-function planner_monthly_header_template(TCPDF $pdf, float $y, float $h, int $active, float $year_margin, array $tabs): void
+function planner_monthly_header_template(TCPDF $pdf, float $y, float $h, int $active, float $year_margin, float $quarter_margin, array $tabs): void
 {
     $pdf->setLineStyle([
         'width' => 0.2,
@@ -142,11 +142,14 @@ function planner_make_monthly_tabs(TCPDF $pdf, Month $month): array
 
 function planner_monthly(TCPDF $pdf, Month $month, bool $monday_start): void
 {
-    $dow_header_height = 5;
-    $dow_header_line_height = 1.5;
+    $dow_header_height = 3;
+    $dow_header_line_height = 1.2;
     $weekly_size = 6;
     $week_font_size = 6;
     $day_font_size = 8;
+    $event_font_size = 3;
+    $event_line_height = 4;
+    $event_bottom_margin = 3;
 
     [$tabs, $tab_targets] = planner_make_monthly_tabs($pdf, $month);
 
@@ -159,12 +162,12 @@ function planner_monthly(TCPDF $pdf, Month $month, bool $monday_start): void
     $weeks = count($month->weeks);
     Templates::draw('planner-monthly', $weeks, $monday_start, $dow_header_height, $dow_header_line_height, $weekly_size);
 
-    [$start_x, $y, $width, $height] = planner_size_dimensions(2);
+    [$start_x, $start_y, $width, $height] = planner_size_dimensions(2);
 
     $per_row = ($height - $dow_header_height) / 6;
     $per_col = ($width - $weekly_size) / 7;
 
-    $y += $dow_header_height;
+    $y = $start_y + $dow_header_height;
 
     $pdf->setTextColor(...Colors::g($last_text_color = 0));
     foreach ($month->weeks as $week) {
@@ -188,11 +191,39 @@ function planner_monthly(TCPDF $pdf, Month $month, bool $monday_start): void
 
             $pdf->Cell($per_col, $per_row, $day->day, align: 'L', valign: 'T');
             $pdf->Link($x, $y, $per_col, $per_row, Links::daily($pdf, $day));
+
             $x += $per_col;
         }
 
         $y += $per_row;
     }
+
+    // Events
+    $y = $start_y + $dow_header_height;
+    $pdf->setTextColor(...Colors::g(0));
+    foreach ($month->weeks as $week) {
+        $pdf->setFontSize($event_font_size);
+        $x = $start_x;
+        $x += $weekly_size;
+
+        foreach ($week->days as $day) {
+            if ($month->hasDay($day)) {
+                // Events
+                $events = Events::getEventOnDay($day);
+                if (count($events) > 0) {
+                    $pdf->setAbsXY($x, $y + $per_row - $event_bottom_margin - $event_line_height * count($events));
+                    foreach ($events as $event) {
+                        $pdf->Cell($per_col, $event_line_height, $event, stretch: 1);
+                    }
+                }
+            }
+
+            $x += $per_col;
+        }
+
+        $y += $per_row;
+    }
+
 
     planner_nav_sub($pdf, $month);
     planner_nav_main($pdf, 0);

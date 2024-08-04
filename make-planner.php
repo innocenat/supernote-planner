@@ -3,6 +3,7 @@ define('BASE', dirname(__FILE__));
 const DS = DIRECTORY_SEPARATOR;
 
 require BASE . DS . 'lib' . DS . 'calendar.php';
+require BASE . DS . 'lib' . DS . 'events.php';
 require BASE . DS . 'lib' . DS . 'links.php';
 require BASE . DS . 'lib' . DS . 'templates.php';
 require BASE . DS . 'lib' . DS . 'igenerator.php';
@@ -48,6 +49,13 @@ $config = [
     '12hr' => $options[3] === '1',
     'night_shift' => $options[4] === '1',
 ];
+
+define('PLANNER_ONLY', $config['planner_only']);
+# define('USE_ICS', BASE . DS . 'holiday.ics');
+
+if (defined('USE_ICS')) {
+    Events::loadFromICS(USE_ICS);
+}
 
 $generator = new PDFGenerator($config, W, H);
 $generator->generate(new PlannerGenerator($title, $subtitle));
