@@ -107,11 +107,14 @@ function planner_daily_template(TCPDF $pdf, float $margin, bool $hr12, bool $nig
     $pdf->setTextColor(...Colors::g(6));
 
     $y = $start_y + $margin;
+    $time_size = 3;
     for ($h = $time_start; $h <= $time_end; $h++) {
-        $pdf->setAbsXY($start_x, $y);
-        $pdf->Cell($agenda_size, $per_line, planner_agenda_format_time_h($h, $hr12), align: 'L');
-        for ($i = 1; $i <= $line_per_hour; $i++)
-            $pdf->Line($start_x, $y + $i * $per_line, $start_x + $agenda_size, $y + $i * $per_line);
+        $pdf->setAbsXY($start_x, $y + $per_line / 2);
+        $pdf->Cell($time_size, $per_line, planner_agenda_format_time_h($h, $hr12), align: 'R');
+        for ($i = 1; $i <= $line_per_hour; $i++) {
+            $offset = $i === 1 ? $time_size : 0;
+            $pdf->Line($start_x + $offset, $y + $i * $per_line, $start_x + $agenda_size, $y + $i * $per_line);
+        }
         $y += $per_hour;
     }
 
