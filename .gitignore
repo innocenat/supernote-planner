@@ -1,3 +1,6 @@
 .idea/
 vendor/
-output/*.pdf
+output/*
+!output/.gitkeep
+custom-templates/*
+!custom-templates/.gitkeep
